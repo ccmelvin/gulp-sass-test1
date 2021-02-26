@@ -1,3 +1,4 @@
+// Initialize modules
 const { src, dest, watch, series } = require("gulp");
 const sass = require("gulp-sass");
 const postcss = require("gulp-postcss");
@@ -7,7 +8,7 @@ const browsersync = require("browser-sync").create();
 
 // Sass Task
 function scssTask() {
-  return src("app/scss/style.scss", { sourcemaps: true })
+  return src("app/scss/*.scss", { sourcemaps: true })
     .pipe(sass())
     .pipe(postcss([cssnano()]))
     .pipe(dest("dist", { sourcemaps: "." }));
@@ -15,7 +16,7 @@ function scssTask() {
 
 // JavaScript Task
 function jsTask() {
-  return src("app/js/script.js", { sourcemaps: true })
+  return src("app/js/*.js", { sourcemaps: true })
     .pipe(terser())
     .pipe(dest("dist", { sourcemaps: "." }));
 }
@@ -40,7 +41,7 @@ function watchTask() {
   watch("*.html", browsersyncReload);
   watch(
     ["app/scss/**/*.scss", "app/js/**/*.js"],
-    series(scssTask, jsTask, browsersyncReload)
+    series(scssTask, jsTask, browsersyncReload, watchTask)
   );
 }
 
